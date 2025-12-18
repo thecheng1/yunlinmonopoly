@@ -1,0 +1,435 @@
+:root {
+    --board-bg: #cde6d0;
+    --center-bg: #e8f5e9;
+    --brown: #8d6e63;
+    --light-blue: #81d4fa;
+    --pink: #f48fb1;
+    --orange: #ffcc80;
+    --red: #ef5350;
+    --yellow: #fff59d;
+    --green: #a5d6a7;
+    --dark-blue: #90caf9;
+    --station: #bdbdbd;
+    --utility: #b0bec5;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Noto Sans TC', sans-serif;
+    background-color: #2c3e50;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    color: #333;
+}
+
+.game-container {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    max-width: 1400px;
+    width: 100%;
+}
+
+/* Board Layout */
+.board {
+    display: grid;
+    grid-template-columns: repeat(11, 1fr);
+    grid-template-rows: repeat(11, 1fr);
+    width: 800px;
+    height: 800px;
+    background-color: var(--board-bg);
+    border: 2px solid #333;
+    position: relative;
+}
+
+.center-area {
+    grid-column: 2 / 11;
+    grid-row: 2 / 11;
+    background-color: var(--center-bg);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.title-box {
+    text-align: center;
+    transform: rotate(-45deg);
+    margin-bottom: 50px;
+}
+
+.title-box h1 {
+    font-size: 3rem;
+    color: #2e7d32;
+    text-shadow: 2px 2px 0 #fff;
+}
+
+.deck {
+    width: 120px;
+    height: 80px;
+    background: #ffab91;
+    border: 2px dashed #d84315;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    transform: rotate(-45deg);
+}
+
+.community-chest-deck {
+    top: 20%;
+    left: 20%;
+    background: #81d4fa;
+    border-color: #0277bd;
+}
+
+.chance-deck {
+    bottom: 20%;
+    right: 20%;
+    background: #ffcc80;
+    border-color: #ef6c00;
+}
+
+/* Tile Styles */
+.tile {
+    border: 1px solid #333;
+    display: flex;
+    flex-direction: column;
+    font-size: 0.7rem;
+    position: relative;
+    background: #fff;
+}
+
+.tile-header {
+    height: 25%;
+    border-bottom: 1px solid #333;
+}
+
+.tile-name {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 2px;
+    font-weight: bold;
+}
+
+.tile-price {
+    text-align: center;
+    padding-bottom: 2px;
+}
+
+/* Color Groups */
+.group-brown {
+    background-color: var(--brown);
+}
+
+.group-light-blue {
+    background-color: var(--light-blue);
+}
+
+.group-pink {
+    background-color: var(--pink);
+}
+
+.group-orange {
+    background-color: var(--orange);
+}
+
+.group-red {
+    background-color: var(--red);
+}
+
+.group-yellow {
+    background-color: var(--yellow);
+}
+
+.group-green {
+    background-color: var(--green);
+}
+
+.group-dark-blue {
+    background-color: var(--dark-blue);
+}
+
+.group-station {
+    background-color: var(--station);
+}
+
+.group-utility {
+    background-color: var(--utility);
+}
+
+/* Corner Tiles */
+.tile.corner {
+    justify-content: center;
+    align-items: center;
+    background: #e0e0e0;
+    font-size: 1rem;
+}
+
+/* Controls Panel */
+.controls-panel {
+    width: 350px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.player-info {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.player-card {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background: #f9f9f9;
+}
+
+.player-card.active {
+    border: 2px solid #2e7d32;
+    background: #e8f5e9;
+    box-shadow: 0 0 10px rgba(46, 125, 50, 0.2);
+}
+
+.message-box {
+    padding: 10px;
+    background: #eee;
+    border-radius: 5px;
+    min-height: 60px;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+}
+
+.action-area {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.btn {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: opacity 0.2s;
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn.primary {
+    background: #2196f3;
+    color: white;
+}
+
+.btn.success {
+    background: #4caf50;
+    color: white;
+}
+
+.btn.secondary {
+    background: #f44336;
+    color: white;
+}
+
+.dice-area {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.dice {
+    width: 50px;
+    height: 50px;
+    background: #fff;
+    border: 2px solid #333;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Player Tokens on Board */
+.token {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    border: 1px solid #fff;
+    position: absolute;
+    box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    z-index: 10;
+    transition: all 0.5s ease;
+}
+
+.token-p0 {
+    background: red;
+    top: 5px;
+    left: 5px;
+}
+
+.token-p1 {
+    background: blue;
+    top: 5px;
+    right: 5px;
+}
+
+.token-p2 {
+    background: green;
+    bottom: 5px;
+    left: 5px;
+}
+
+.token-p3 {
+    background: orange;
+    bottom: 5px;
+    right: 5px;
+}
+
+/* Modal Styles */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
+.modal-content {
+    background: #fff;
+    padding: 40px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.modal h2 {
+    margin-bottom: 20px;
+    color: #2c3e50;
+}
+
+.setup-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+    margin-top: 30px;
+}
+
+.setup-select {
+    padding: 10px;
+    font-size: 1.2rem;
+    border-radius: 5px;
+    border: 2px solid #ccc;
+}
+
+.big-btn {
+    padding: 15px 30px;
+    font-size: 1.2rem;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* House Styles */
+.house-container {
+    display: flex;
+    justify-content: center;
+    gap: 2px;
+    margin-top: 2px;
+}
+
+.house {
+    width: 8px;
+    height: 8px;
+    background-color: #ffeb3b;
+    /* Yellow star-like */
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+    border: none;
+}
+
+/* Distinct Tokens */
+.token {
+    width: 24px;
+    height: 24px;
+    border-radius: 0;
+    /* Reset circle */
+    border: none;
+    background: transparent;
+    font-size: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 20;
+    transition: all 0.5s ease;
+    text-shadow: 0 0 3px #fff;
+}
+
+.token-p0::before {
+    content: '🚗';
+}
+
+/* Car */
+.token-p1::before {
+    content: '✈️';
+}
+
+/* Plane */
+.token-p2::before {
+    content: '🚢';
+}
+
+/* Ship */
+.token-p3::before {
+    content: '🚃';
+}
+
+/* Train */
+
+.token-p0 {
+    top: 0;
+    left: 0;
+}
+
+.token-p1 {
+    top: 0;
+    right: 0;
+}
+
+.token-p2 {
+    bottom: 0;
+    left: 0;
+}
+
+.token-p3 {
+    bottom: 0;
+    right: 0;
+}
