@@ -14,6 +14,7 @@ const playerInfoEl = document.getElementById('player-info');
 const messageBoxEl = document.getElementById('message-box');
 const rollBtn = document.getElementById('roll-btn');
 const buyBtn = document.getElementById('buy-btn');
+const passBtn = document.getElementById('pass-btn');
 const endTurnBtn = document.getElementById('end-turn-btn');
 const dice1El = document.getElementById('dice-1');
 const dice2El = document.getElementById('dice-2');
@@ -161,37 +162,56 @@ function logMessage(msg) {
 function updateControls() {
     const currentPlayer = gameState.players[gameState.currentPlayerIndex];
 
-    // Disable all controls if it's AI's turn
     if (currentPlayer.isComputer) {
         rollBtn.disabled = true;
         buyBtn.disabled = true;
+        passBtn.disabled = true;
         endTurnBtn.disabled = true;
         return;
     }
 
     rollBtn.disabled = gameState.phase !== 'roll';
     buyBtn.disabled = gameState.phase !== 'action';
+    passBtn.disabled = gameState.phase !== 'action';
     endTurnBtn.disabled = gameState.phase !== 'end';
 
     // Check if current tile is buyable or buildable
     if (gameState.phase === 'action') {
         const loc = gameState.board[currentPlayer.position];
         if (loc.type === 'property' || loc.type === 'station' || loc.type === 'utility') {
-            if (!loc.owner) {
-                buyBtn.disabled = false;
-                buyBtn.innerText = `購買 ($${loc.price})`;
+            if (loc.owner === undefined) {
+                // Buy Property
+                if (currentPlayer.money >= loc.price) {
+                    buyBtn.disabled = false;
+                    buyBtn.innerText = `購買 ($${loc.price})`;
+                } else {
+                    buyBtn.disabled = true;
+                    buyBtn.innerText = `現金不足 ($${loc.price})`;
+                }
+                passBtn.disabled = false; // Always allow passing
             } else if (loc.owner === currentPlayer.id && loc.type === 'property') {
                 // Build House Logic
-                const houseCost = loc.price * 0.5; // House cost is 50% of property price
-                buyBtn.disabled = false;
-                buyBtn.innerText = `蓋房子 ($${houseCost})`;
+                const houseCost = Math.floor(loc.price * 0.3); // House cost is 30% of property price
+                if (currentPlayer.money >= houseCost && (!loc.houses || loc.houses < 4)) {
+                    buyBtn.disabled = false;
+                    buyBtn.innerText = `蓋房子 ($${houseCost})`;
+                } else if (loc.houses >= 4) {
+                    buyBtn.disabled = true;
+                    buyBtn.innerText = "已蓋滿";
+                } else {
+                    buyBtn.disabled = true;
+                    buyBtn.innerText = `現金不足 ($${houseCost})`;
+                }
+                passBtn.disabled = false;
             } else {
                 buyBtn.disabled = true;
                 buyBtn.innerText = "無法操作";
+                passBtn.disabled = false;
             }
         } else {
             buyBtn.disabled = true;
             buyBtn.innerText = "無法購買";
+            passBtn.disabled = true;
         }
     }
 }
@@ -306,11 +326,19 @@ buyBtn.addEventListener('click', () => {
     if (gameState.phase === 'action') executeBuyOrBuild();
 });
 
+passBtn.addEventListener('click', () => {
+    if (gameState.phase === 'action') {
+        logMessage(`${gameState.players[gameState.currentPlayerIndex].name} 選擇放棄購買/蓋房。`);
+        gameState.phase = 'end';
+        updateControls();
+    }
+});
+
 function executeBuyOrBuild() {
     const player = gameState.players[gameState.currentPlayerIndex];
     const loc = gameState.board[player.position];
 
-    if (!loc.owner) {
+    if (loc.owner === undefined) {
         // Buy Property
         if (player.money >= loc.price) {
             player.money -= loc.price;
@@ -329,7 +357,7 @@ function executeBuyOrBuild() {
         }
     } else if (loc.owner === player.id) {
         // Build House
-        const houseCost = loc.price * 0.5;
+        const houseCost = Math.floor(loc.price * 0.3);
         if (player.money >= houseCost) {
             if (!loc.houses) loc.houses = 0;
             if (loc.houses < 4) {
@@ -396,19 +424,19 @@ function playAITurnAction() {
     if (gameState.phase === 'action') {
         const loc = gameState.board[player.position];
 
-        if (!loc.owner) {
+        if (loc.owner === undefined) {
             // Buy logic
             // Simple AI Strategy: Buy if money > price + 500 (reserve)
             if (player.money >= loc.price + 500) {
                 executeBuyOrBuild();
             } else {
-                logMessage(`${player.name} 決定不購買。`);
+                logMessage(`${player.name} 選擇放棄購買。`);
                 gameState.phase = 'end';
                 setTimeout(executeEndTurn, 1000);
             }
         } else if (loc.owner === player.id) {
             // Build logic
-            const houseCost = loc.price * 0.5;
+            const houseCost = Math.floor(loc.price * 0.3);
             if (player.money >= houseCost + 1000) { // Conservative build
                 executeBuyOrBuild();
             } else {

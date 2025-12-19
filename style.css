@@ -223,6 +223,15 @@ body {
     gap: 10px;
 }
 
+.action-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.action-buttons .btn {
+    flex: 1;
+}
+
 .btn {
     padding: 10px;
     border: none;
@@ -249,6 +258,11 @@ body {
 
 .btn.secondary {
     background: #f44336;
+    color: white;
+}
+
+.btn.warning {
+    background: #ff9800;
     color: white;
 }
 
@@ -368,12 +382,17 @@ body {
 }
 
 .house {
-    width: 8px;
-    height: 8px;
-    background-color: #ffeb3b;
-    /* Yellow star-like */
-    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
-    border: none;
+    width: 14px;
+    height: 14px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: transparent;
+}
+
+.house::before {
+    content: '🏠';
+    font-size: 12px;
 }
 
 /* Distinct Tokens */
